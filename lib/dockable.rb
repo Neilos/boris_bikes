@@ -12,6 +12,7 @@ module Dockable
     raise RuntimeError, "Bike with id #{bike.id} is already docked" if bikes.include? bike
     true if bikes << bike
   end
+<<<<<<< HEAD
 
   # returns an array of bikes
   def undock(*bike_to_undock)
@@ -22,6 +23,19 @@ module Dockable
       return bikes.shift
     else
       bikes.delete bike_to_undock.first
+=======
+
+  # returns an array of bikes
+  def undock(*bike_to_undock)
+    raise ArgumentError, "Cannot undock multiple bikes at once" if bike_to_undock.length > 1
+    raise RuntimeError, "No more bikes." if empty?
+
+    if bike_to_undock.length ==0
+      return bikes.shift
+    else
+      found = bikes.index(bike_to_undock[0])
+      bikes.delete_at(found) unless found.nil?
+>>>>>>> 186c9d5f0012188d1bf595d937f208c483548ee7
     end
   end
 
