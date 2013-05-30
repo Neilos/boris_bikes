@@ -7,6 +7,10 @@ module Dockable
   attr_writer :capacity
 
 
+  # def register_with_headquaters(headquarters, object)
+  #   headquarters.create(object)
+  # end
+
   def dock(bike)
     raise RuntimeError, "Maximum capacity reached. Cannot dock another bike." if full?
     raise RuntimeError, "Bike with id #{bike.id} is already docked" if bikes.include? bike
@@ -48,6 +52,29 @@ module Dockable
 
   def available_bikes
     bikes.reject { |bike| bike.broken? }
+  end
+
+  def hunger_hash
+   @hunger_hash ||= {}
+  end
+
+  # positive hunger levels indicate "hungry for"
+  # negative hunger levels indicate "satisfied with"
+  # so, for example, a garage will be naturally "satisfied with" available bikes
+  # and "hungry for" broken bikes
+  # hunger_level is a hash with Bike::'type' as the key and the hunger level
+  # as the value
+  def set_hunger_for(hunger_level)
+     hunger_hash.merge!(hunger_level)
+  end
+
+  def get_hunger_for(bike_type)
+     return hunger_hash[bike_type] unless hunger_hash[bike_type].nil?
+     0
+  end
+
+  def headquarters
+    @hq ||= Headquarters.new
   end
 
 end

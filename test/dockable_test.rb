@@ -2,12 +2,14 @@ require 'minitest/autorun'
 require 'minitest/spec'
 require '../lib/dockable'
 require '../lib/bike'
+require '../lib/headquarters'
 
 class DockableClass
   include Dockable # only need to include the module to get all the functionality
 
-  def initialize
+  def initialize(hq)
     #do whatever we like here
+    @hq = hq
   end
 
 end
@@ -15,12 +17,24 @@ end
 describe Dockable do
 
   before do
-    @dockable_instance = DockableClass.new
+    @hq = Headquarters.new
+    @dockable_instance = DockableClass.new(@hq)
     @bike1 = Bike.new(1)
     @bike2 = Bike.new(2)
     @bike3 = Bike.new(3)
     @bike4 = Bike.new(4)
   end
+
+  it "should know its headquarters" do
+    @dockable_instance.headquarters.wont_be_nil
+  end
+
+  it "should register_with_headquarters when initialized so that headquarters knows about it" do
+    @hq = Headquarters.new
+    @dockable_instance1 = DockableClass.new(@hq)
+    @hq.dockables.must_include @dockable_instance1
+  end
+
 
   it "should have an id of integer" do
     @dockable_instance.id = 2
@@ -144,7 +158,7 @@ describe Dockable do
 
     describe "when empty" do
       before do
-        @dockable_instance = DockableClass.new  # empty DockableClass instances
+        @dockable_instance = DockableClass.new(@hq)  # empty DockableClass instances
       end
 
       it "wont undock bikes if there are not enough bikes" do
@@ -196,4 +210,14 @@ describe Dockable do
     end
   end
 
+  describe "hunger levels" do
+    it "should have a default value of 0" do
+      @dockable_instance.get_hunger_for(Bike::BROKEN).must_equal 0
+    end
+
+    it "should have a set_hunger_for and a get_hunger_for methods that set and get the hunger level" do
+      @dockable_instance.set_hunger_for(Bike::BROKEN => 1)
+      @dockable_instance.get_hunger_for(Bike::BROKEN).must_equal 1
+    end
+  end
 end

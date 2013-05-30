@@ -1,6 +1,9 @@
 
 class Bike
 
+  BROKEN = :broken
+  WORKING = :working
+
   attr_reader :id
 
   def initialize(id)

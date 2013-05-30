@@ -20,16 +20,14 @@ describe Garage do
     @garage.must_be_kind_of(Dockable)
   end
 
+  describe "hunger levels" do
+    it "should have a hunger level greater than 0 for bike type Bike::BROKEN" do
+      @garage.get_hunger_for(Bike::BROKEN).must_be(:>, 0)
+    end
 
-  # describe "fixed_bikes" do
-  #   it "should respond to fixed_bikes" do
-  #     @garage.must_respond_to :fixed_bikes
-  #   end
+    it "should have a hunger level less than 0 for bike type Bike::WORKING" do
+      @garage.get_hunger_for(Bike::WORKING).must_be(:<, 0)
+    end
+  end
 
-  #   it "should return only available_bikes" do
-  #     @garage.dock(@bike)
-  #     @garage.dock(@broken_bike)
-  #     @garage.fixed_bikes.must_equal(@garage.available_bikes)
-  #   end
-  # end
 end

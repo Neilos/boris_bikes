@@ -8,6 +8,15 @@ describe Bike do
     @bike = Bike.new(1)
   end
 
+
+  it "should have a constant of BROKEN" do
+    defined?(Bike::BROKEN).wont_be_nil
+  end
+
+  it "should have a constant of WORKING" do
+    defined?(Bike::WORKING).wont_be_nil
+  end
+
   it "should have an id" do
     @bike.id.wont_be_nil
   end

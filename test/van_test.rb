@@ -4,6 +4,7 @@ require '../lib/van'
 require '../lib/garage'
 require '../lib/docking_station'
 require '../lib/bike'
+require '../lib/headquarters'
 
 describe Van do
 
@@ -13,6 +14,10 @@ describe Van do
     @docking_station2 = DockingStation.new
     @garage = Garage.new
     @bike1 = Bike.new(1)
+    @bike2 = Bike.new(2)
+    @bike3 = Bike.new(3)
+    @bike4 = Bike.new(4)
+    @bike5 = Bike.new(5)
   end
 
   it "should be a dockable" do
@@ -47,51 +52,73 @@ describe Van do
     end
   end
 
+
   describe "redistribute" do
+
+    before do
+    end
+
     it "should respond to redistribute" do
       @van.must_respond_to :redistribute
     end
 
-    it "should calculate the docking_station with the highest number of bikes" do
-      
+    describe "how_hungry_for" do
+      it "should return a numeric score for how hungry the dockable is for a given bike type based on calculation: hunger level * no. of empty spaces" do
+        @docking_station1.set_hunger_for(Bike::WORKING => 2)
+        @docking_station1.dock(@bike1)
+        @docking_station1.dock(@bike2)
+        @docking_station1.dock(@bike3)
+        @docking_station1.dock(@bike4)
+        @van.how_hungry_for(@docking_station1, Bike::WORKING).must_equal @docking_station1.get_hunger_for(Bike::WORKING) * (@docking_station1.capacity - @docking_station1.bikes_count)
+      end
     end
-    # describe "transfer broken bikes to a garage" do
-    #   it "should collect bikes from a dockable and drop-off some or all at another dockable" do
 
-    #   end
+    describe "most_hungry_for" do
+      it "should return the dockable that is most hungry for a given bike type" do
+        @hq = Headquarters.new
+        @docking_station1 = @hq.create(DockingStation)
+        @docking_station2 = @hq.create(DockingStation)
+        @garage1 = @hq.create(Garage)
+        @docking_station1.dock(@bike1)
+        @docking_station1.dock(@bike2)
+        @docking_station2.dock(@bike3)
+        @garage1.dock(@bike4)
+        @garage1.dock(@bike5)
+        @van.most_hungry_for(Bike::WORKING).must_equal @docking_station1
+      end
+    end
 
-    #   it "should only drop_off at a garage" do
-    #     # lambda { ??????????) }.must_raise RuntimeError
-    #   end
-    # end
+    describe "most_hungry" do
+      
+      it "should return hash" do
+        skip
+      end
 
-    # describe "transfer fixed bikes to a docking station" do
-    #   it "should only collect from a garage" do
-    #     skip
-    #     # lambda { ????????????) }.must_raise RuntimeError
-    #   end
+      it "should return the most hungry dockable" do
+        skip
+      end
 
-    #   it "should only drop_off at a docking station" do
-    #     skip
-    #     # lambda { ????????????) }.must_raise RuntimeError
-    #   end
-    # end
+      it "should return the type hungry dockable" do
+        skip
+      end
 
-    # describe "transfer excess bikes from one docking station to another" do
-    #   it "should only collect from a docking_station" do
-    #     skip
-    #     # lambda { ????????????) }.must_raise RuntimeError
-    #   end
 
-    #   it "should only drop_off at a docking station" do
-    #     skip
-    #     # lambda { ????????????) }.must_raise RuntimeError
-    #   end
-    # end
+    end
+
+
+
+    describe "most_full_of" do
+      it "should" do
+        skip
+      end
+    end
+
+    describe "how_full_of" do
+      it "should" do
+        skip
+      end
+    end
   end
-
-
-
 
 
 end
