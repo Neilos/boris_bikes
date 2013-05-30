@@ -9,7 +9,7 @@ require '../lib/headquarters'
 describe Van do
 
   before do
-    @van = Van.new
+    @van = Van.new(Headquarters.new)
     @docking_station1 = DockingStation.new
     @docking_station2 = DockingStation.new
     @garage = Garage.new
@@ -18,6 +18,10 @@ describe Van do
     @bike3 = Bike.new(3)
     @bike4 = Bike.new(4)
     @bike5 = Bike.new(5)
+  end
+
+  it "should be initialized with a headquarters" do
+    Van.new(Headquarters.new)
   end
 
   it "should be a dockable" do

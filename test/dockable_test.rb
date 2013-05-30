@@ -5,20 +5,17 @@ require '../lib/bike'
 require '../lib/headquarters'
 
 class DockableClass
-  include Dockable # only need to include the module to get all the functionality
+  include Dockable
 
   def initialize(hq)
-    #do whatever we like here
-    @hq = hq
+    headquarters = hq
   end
-
 end
 
 describe Dockable do
 
   before do
-    @hq = Headquarters.new
-    @dockable_instance = DockableClass.new(@hq)
+    @dockable_instance = DockableClass.new(Headquarters.new)
     @bike1 = Bike.new(1)
     @bike2 = Bike.new(2)
     @bike3 = Bike.new(3)
@@ -29,7 +26,7 @@ describe Dockable do
     @dockable_instance.headquarters.wont_be_nil
   end
 
-  it "should register_with_headquarters when initialized so that headquarters knows about it" do
+  it "should register_with_headquarters when initialized" do
     @hq = Headquarters.new
     @dockable_instance1 = DockableClass.new(@hq)
     @hq.dockables.must_include @dockable_instance1
@@ -42,7 +39,6 @@ describe Dockable do
   end
 
   describe "bike count" do
-
     it "should count the number of bikes docked" do
       @dockable_instance.bikes_count.must_be_kind_of(Integer)
     end
@@ -50,11 +46,10 @@ describe Dockable do
     it "should return a zero bike count for a new instance" do
       @dockable_instance.bikes_count.must_equal 0
     end
-
   end
 
   it "should be empty when the count of bikes is 0" do
-    @dockable_instance.must_be :empty?
+    @dockable_instance.empty?.must_equal true
   end
 
   describe "capacity" do
@@ -82,7 +77,7 @@ describe Dockable do
   it "should be full when bike count is equal to capacity" do
     @dockable_instance.capacity=(1)
     @dockable_instance.dock(@bike1)
-    @dockable_instance.must_be :full?
+    @dockable_instance.full?.must_equal true
   end
 
   describe "docking bikes" do

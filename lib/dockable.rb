@@ -5,11 +5,13 @@ module Dockable
 
   attr_accessor :id
   attr_writer :capacity
+  attr_reader :headquarters
 
+  def headquarters=(hq)
+    @headquarters = hq
+    @headquarters.register(self)
+  end
 
-  # def register_with_headquaters(headquarters, object)
-  #   headquarters.create(object)
-  # end
 
   def dock(bike)
     raise RuntimeError, "Maximum capacity reached. Cannot dock another bike." if full?

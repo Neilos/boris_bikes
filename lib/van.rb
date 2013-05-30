@@ -1,7 +1,12 @@
 require_relative '../lib/dockable'
+require_relative 'headquarters'
 
 class Van
   include Dockable
+
+  def initialize(hq)
+    headquarters = hq
+  end
 
   def collect(dockable,*bikes)
     bikes.each do |bike|
