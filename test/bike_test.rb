@@ -16,15 +16,27 @@ describe Bike do
     @bike.wont_be :broken?
   end
   
-  it "should be broken when broken" do
-    @bike.break!
-    @bike.must_be :broken?
+  describe "break!" do
+    it "should be broken when broken" do
+      @bike.break!
+      @bike.must_be :broken?
+    end
+
+    it "should return a reference to the bike" do
+      @bike.break!.must_be_same_as @bike
+    end
   end
   
-  it "should not be broken when fixed" do
-    @bike.break!
-    @bike.fix!
-    @bike.wont_be :broken?
+  describe "fix!" do
+    it "should not be broken when fixed" do
+      @bike.break!
+      @bike.fix!
+      @bike.wont_be :broken?
+    end
+
+    it "should return a reference to the bike" do
+      @bike.fix!.must_be_same_as @bike
+    end
   end
 
 end

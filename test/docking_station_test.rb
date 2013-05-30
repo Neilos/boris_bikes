@@ -14,4 +14,8 @@ describe DockingStation do
     @bike.must_be :broken?
   end
 
+  it "should be a dockable" do
+    @docking_station.must_be_kind_of(Dockable)
+  end
+
 end

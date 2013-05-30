@@ -1,7 +1,7 @@
-# require '../lib/dockable.rb'
+require_relative 'dockable.rb'
 
 class DockingStation
-  # include Dockable
+  include Dockable
 
   def break(bike)
     bike.break!

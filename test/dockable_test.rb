@@ -142,18 +142,6 @@ describe Dockable do
       @dockable_instance.undock(@undocked_bike).must_equal nil
     end
 
-    it "should not undock multiple bikes" do
-      lambda { @dockable_instance.undock(@bike1, @bike2) }.must_raise ArgumentError
-    end
-
-    it "should not undock multiple bikes" do
-      begin
-        @dockable_instance.undock(@bike1, @bike2)
-      rescue ArgumentError => e
-        e.message.must_equal "Cannot undock multiple bikes at once"
-      end
-    end
-
     describe "when empty" do
       before do
         @dockable_instance = DockableClass.new  # empty DockableClass instances
@@ -176,12 +164,8 @@ describe Dockable do
   describe "broken_bikes" do
 
     it "should return only the broken_bikes" do
-      @broken_bike1 = Bike.new(1)
-      @broken_bike1.break!
-      
-      @broken_bike2 = Bike.new(2)
-      @broken_bike2.break!
-      
+      @broken_bike1 = Bike.new(1).break!
+      @broken_bike2 = Bike.new(2).break!
       @dockable_instance.dock(@bike1)
       @dockable_instance.dock(@broken_bike1)
       @dockable_instance.dock(@bike2)
@@ -190,10 +174,26 @@ describe Dockable do
       @dockable_instance.broken_bikes.must_equal [@broken_bike1, @broken_bike2]
     end
 
+    it "should return an empty array if there are no broken bikes" do
+      @dockable_instance.dock(@bike1)
+      @dockable_instance.broken_bikes.must_equal []
+    end
+
   end
 
-  it "should return a list of available bikes" do
-    ###### NEEDS MORE WORK ###############
+  describe "available bikes" do
+    it "should return only the available bikes" do
+      @broken_bike1 = Bike.new(1).break!
+      @dockable_instance.dock(@bike1)
+      @dockable_instance.dock(@broken_bike1)
+      @dockable_instance.available_bikes.must_equal [@bike1]
+    end
+
+    it "should return an empty array if there are no available bikes" do
+      @broken_bike1 = Bike.new(1).break!
+      @dockable_instance.dock(@broken_bike1)
+      @dockable_instance.available_bikes.must_equal []
+    end
   end
 
 end
