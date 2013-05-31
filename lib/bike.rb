@@ -1,14 +1,18 @@
 
 class Bike
 
-  BROKEN = :broken
-  WORKING = :working
+
+  BIKE_TYPES = [
+    BROKEN = :broken,
+    WORKING = :working
+  ]
 
   attr_reader :id
 
   def initialize(id)
     fix!
     @id = id
+    @broken = false
   end
 
   def broken?

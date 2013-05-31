@@ -1,14 +1,20 @@
-require 'minitest/autorun'
 require 'minitest/spec'
+require 'minitest/mock'
+require 'minitest/autorun'
 require '../lib/dockable'
 require '../lib/bike'
 require '../lib/headquarters'
 
+
 class DockableClass
   include Dockable
+  def initialize(headquarters)
+    register_with_hq(headquarters)
+  end
+end
 
-  def initialize(hq)
-    headquarters = hq
+class HeadquartersDouble
+  def register_dockable(dockable)
   end
 end
 
@@ -22,16 +28,18 @@ describe Dockable do
     @bike4 = Bike.new(4)
   end
 
-  it "should know its headquarters" do
-    @dockable_instance.headquarters.wont_be_nil
-  end
+  describe "its headquarters" do
+    it "should register with a headquarters" do
+      @mock_hq = MiniTest::Mock.new
+      @mock_hq.expect(:register_dockable, true, [DockableClass])
+      @dockable_instance2 = DockableClass.new(@mock_hq)
+      @mock_hq.verify
+    end
 
-  it "should register_with_headquarters when initialized" do
-    @hq = Headquarters.new
-    @dockable_instance1 = DockableClass.new(@hq)
-    @hq.dockables.must_include @dockable_instance1
+    it "should know its headquarters" do
+      @dockable_instance.headquarters.wont_be_nil
+    end
   end
-
 
   it "should have an id of integer" do
     @dockable_instance.id = 2
@@ -153,16 +161,16 @@ describe Dockable do
 
     describe "when empty" do
       before do
-        @dockable_instance = DockableClass.new(@hq)  # empty DockableClass instances
+        @empty_dockable_instance = DockableClass.new(Headquarters.new)  # empty DockableClass instances
       end
 
       it "wont undock bikes if there are not enough bikes" do
-        lambda { @dockable_instance.undock }.must_raise RuntimeError
+        lambda { @empty_dockable_instance.undock }.must_raise RuntimeError
       end
 
       it "should return a message indicating not enough bikes" do
         begin
-          @dockable_instance.undock
+          @empty_dockable_instance.undock
         rescue RuntimeError => e
           e.message.must_equal "No more bikes."
         end

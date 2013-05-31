@@ -8,13 +8,28 @@ describe Bike do
     @bike = Bike.new(1)
   end
 
-
-  it "should have a constant of BROKEN" do
+  it "should have a defined constant of BROKEN" do
     defined?(Bike::BROKEN).wont_be_nil
   end
 
-  it "should have a constant of WORKING" do
+  it "should have a defined constant of WORKING" do
     defined?(Bike::WORKING).wont_be_nil
+  end
+
+  describe "BIKE_TYPES" do
+
+    it "should have an array of constants called BIKE_TYPES" do
+      defined?(Bike::BIKE_TYPES).wont_be_nil
+    end
+
+    it "should include the bike type WORKING" do
+      Bike::BIKE_TYPES.include?(Bike::WORKING).wont_equal false
+    end
+
+    it "should include the bike type BROKEN" do
+      Bike::BIKE_TYPES.include?(Bike::BROKEN).wont_equal false
+    end
+
   end
 
   it "should have an id" do
@@ -22,13 +37,13 @@ describe Bike do
   end
 
   it "should not be broken when initialized" do
-    @bike.wont_be :broken?
+    @bike.broken?.wont_equal true
   end
   
   describe "break!" do
     it "should be broken when broken" do
       @bike.break!
-      @bike.must_be :broken?
+      @bike.broken?.must_equal true
     end
 
     it "should return a reference to the bike" do
@@ -40,7 +55,7 @@ describe Bike do
     it "should not be broken when fixed" do
       @bike.break!
       @bike.fix!
-      @bike.wont_be :broken?
+      @bike.broken?.wont_equal true
     end
 
     it "should return a reference to the bike" do

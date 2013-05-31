@@ -4,8 +4,8 @@ require_relative 'headquarters'
 class Garage
   include Dockable
   
-  def initialize(hq)
-    headquarters = hq
+  def initialize(headquarters)
+    register_with_hq(headquarters)
     set_hunger_for(Bike::BROKEN => 1)
     set_hunger_for(Bike::WORKING => -1)
   end

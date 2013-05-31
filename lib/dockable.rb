@@ -7,11 +7,10 @@ module Dockable
   attr_writer :capacity
   attr_reader :headquarters
 
-  def headquarters=(hq)
-    @headquarters = hq
-    @headquarters.register(self)
+  def register_with_hq(hq)
+    @headquarters = hq            
+    @headquarters.register_dockable(self)
   end
-
 
   def dock(bike)
     raise RuntimeError, "Maximum capacity reached. Cannot dock another bike." if full?
@@ -73,10 +72,6 @@ module Dockable
   def get_hunger_for(bike_type)
      return hunger_hash[bike_type] unless hunger_hash[bike_type].nil?
      0
-  end
-
-  def headquarters
-    @hq ||= Headquarters.new
   end
 
 end

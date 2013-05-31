@@ -13,7 +13,7 @@ attr_reader :dockables
     @dockables.map {|dockable| dockable.bikes}.flatten
   end
 
-  def register(headquarters, object)
+  def register_dockable(new_dockable)
      dockables << new_dockable
   end
 
