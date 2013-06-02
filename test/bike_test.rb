@@ -6,7 +6,7 @@ require '../lib/bike'
 describe Bike do 
 
   before do
-    @bike = Bike.new(1)
+    @bike = Bike.new
   end
 
   it "should have a defined constant of BROKEN" do
@@ -35,35 +35,41 @@ describe Bike do
     @bike.must_respond_to :state
   end
 
-  it "should have an id" do
-    @bike.id.wont_be_nil
+  it "should know its chance_of_breaking" do
+    @bike.must_respond_to :chance_of_breaking
   end
 
-  it "should not be broken when initialized" do
-    @bike.state.wont_equal Bike::BROKEN
-  end
   
-  describe "break!" do
-    it "should be broken when broken" do
-      @bike.break!
-      @bike.state.must_equal Bike::BROKEN
+  describe "initialization" do
+    it "should have an id that can be set when initialized" do
+      new_bike = Bike.new(id: 1)
+      new_bike.id.wont_be_nil
     end
 
-    it "should return a reference to the bike" do
-      @bike.break!.must_be_same_as @bike
+    it "should not be broken when initialized" do
+      new_bike = Bike.new
+      new_bike.state.wont_equal Bike::BROKEN
+    end
+
+    it "should be initializable with a chance of breaking" do
+      new_bike = Bike.new(chance_of_breaking: 0.7)
+      new_bike.chance_of_breaking.must_equal 0.7
     end
   end
-  
-  describe "fix!" do
-    it "should not be broken when fixed" do
-      @bike.break!
-      @bike.fix!
-      @bike.state.wont_equal Bike::BROKEN
-    end
 
-    it "should return a reference to the bike" do
-      @bike.fix!.must_be_same_as @bike
-    end
+
+  it "should be possible to ride it" do
+    @bike.must_respond_to :ride
+  end
+
+  it "should break when ridden depending on its chance_of_breaking" do
+    faultless_bike = Bike.new(chance_of_breaking: 0.0)
+    faultless_bike.ride
+    faultless_bike.state.wont_equal Bike::BROKEN
+
+    duff_bike = Bike.new(chance_of_breaking: 1.0)
+    duff_bike.ride
+    duff_bike.state.must_equal Bike::BROKEN
   end
 
 end

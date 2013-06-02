@@ -1,26 +1,23 @@
 
-# Bike knows and can change it's state
+# Bikes break randomly when ridden
 class Bike
   attr_reader :id
-  attr_accessor :state
+  attr_accessor :state, :chance_of_breaking
 
   STATES = [
     BROKEN = :broken,
     WORKING = :working
   ]
 
-  def initialize(id)
+  def initialize(characteristics={id: "?", chance_of_breaking: 0.5})
     self.state = WORKING
-    @id = id
+    @id = characteristics[:id]
+    self.chance_of_breaking = characteristics[:chance_of_breaking]
   end
 
-  def break!
-    self.state = BROKEN
-    self
+  def ride
+    self.state = BROKEN if chance_of_breaking >= Random.rand
+    state
   end
 
-  def fix!
-    self.state = WORKING
-    self
-  end
 end
