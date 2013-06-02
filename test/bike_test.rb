@@ -1,6 +1,7 @@
+require 'minitest/spec'
 require 'minitest/autorun'
 require '../lib/bike'
-require 'minitest/spec'
+
 
 describe Bike do 
 
@@ -16,20 +17,22 @@ describe Bike do
     defined?(Bike::WORKING).wont_be_nil
   end
 
-  describe "BIKE_TYPES" do
-
-    it "should have an array of constants called BIKE_TYPES" do
-      defined?(Bike::BIKE_TYPES).wont_be_nil
+  describe "STATES" do
+    it "should have an array of constants called STATES" do
+      defined?(Bike::STATES).wont_be_nil
     end
 
     it "should include the bike type WORKING" do
-      Bike::BIKE_TYPES.include?(Bike::WORKING).wont_equal false
+      Bike::STATES.include?(Bike::WORKING).wont_equal false
     end
 
     it "should include the bike type BROKEN" do
-      Bike::BIKE_TYPES.include?(Bike::BROKEN).wont_equal false
+      Bike::STATES.include?(Bike::BROKEN).wont_equal false
     end
+  end
 
+  it "should know its state" do
+    @bike.must_respond_to :state
   end
 
   it "should have an id" do
@@ -37,13 +40,13 @@ describe Bike do
   end
 
   it "should not be broken when initialized" do
-    @bike.broken?.wont_equal true
+    @bike.state.wont_equal Bike::BROKEN
   end
   
   describe "break!" do
     it "should be broken when broken" do
       @bike.break!
-      @bike.broken?.must_equal true
+      @bike.state.must_equal Bike::BROKEN
     end
 
     it "should return a reference to the bike" do
@@ -55,7 +58,7 @@ describe Bike do
     it "should not be broken when fixed" do
       @bike.break!
       @bike.fix!
-      @bike.broken?.wont_equal true
+      @bike.state.wont_equal Bike::BROKEN
     end
 
     it "should return a reference to the bike" do

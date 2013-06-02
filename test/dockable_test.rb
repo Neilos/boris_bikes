@@ -8,9 +8,6 @@ require '../lib/headquarters'
 
 class DockableClass
   include Dockable
-  def initialize(headquarters)
-    register_with_hq(headquarters)
-  end
 end
 
 class HeadquartersDouble
@@ -21,24 +18,36 @@ end
 describe Dockable do
 
   before do
-    @dockable_instance = DockableClass.new(Headquarters.new)
+    @dockable_instance = DockableClass.new
     @bike1 = Bike.new(1)
     @bike2 = Bike.new(2)
     @bike3 = Bike.new(3)
     @bike4 = Bike.new(4)
   end
 
-  describe "its headquarters" do
-    it "should register with a headquarters" do
-      @mock_hq = MiniTest::Mock.new
-      @mock_hq.expect(:register_dockable, true, [DockableClass])
-      @dockable_instance2 = DockableClass.new(@mock_hq)
-      @mock_hq.verify
-    end
+  it "should be able to register with a headquarters" do
+    @mock_hq = MiniTest::Mock.new
+    @mock_hq.expect(:register_dockable, true, [DockableClass])
+    @dockable_instance.register_with_hq(@mock_hq)
+    @mock_hq.verify
+  end
 
-    it "should know its headquarters" do
-      @dockable_instance.headquarters.wont_be_nil
-    end
+  it "should know its headquarters at all times" do
+    @dockable_instance.headquarters.wont_be_nil
+  end
+
+  it "should have a hunger_monitor" do
+    @dockable_instance.must_respond_to :hunger_monitor
+    @dockable_instance.must_respond_to :hunger_monitor=
+  end
+
+  it "should be able to set a hunger_monitor" do
+    @mock_hunger_monitor = MiniTest::Mock.new
+    @dockable_instance.hunger_monitor = @mock_hunger_monitor
+  end
+
+  it "should know its hunger_monitor at all times" do
+    @dockable_instance.headquarters.wont_be_nil
   end
 
   it "should have an id of integer" do
@@ -46,22 +55,8 @@ describe Dockable do
     @dockable_instance.id.must_be_kind_of(Integer)
   end
 
-  describe "bike count" do
-    it "should count the number of bikes docked" do
-      @dockable_instance.bikes_count.must_be_kind_of(Integer)
-    end
-
-    it "should return a zero bike count for a new instance" do
-      @dockable_instance.bikes_count.must_equal 0
-    end
-  end
-
-  it "should be empty when the count of bikes is 0" do
-    @dockable_instance.empty?.must_equal true
-  end
 
   describe "capacity" do
-
     it "should be retrievable" do
       @dockable_instance.must_respond_to :capacity
     end
@@ -79,31 +74,23 @@ describe Dockable do
       @dockable_instance.capacity = set_value
       @dockable_instance.capacity.must_equal set_value
     end
-
   end
 
-  it "should be full when bike count is equal to capacity" do
-    @dockable_instance.capacity=(1)
-    @dockable_instance.dock(@bike1)
-    @dockable_instance.full?.must_equal true
-  end
 
-  describe "docking bikes" do
-      
+  describe "docking bikes" do      
     it "should be able to dock a bike" do
       @dockable_instance.dock(@bike1)
-      @dockable_instance.bikes_count.must_equal 1
     end
 
-    describe "invalid docks" do
 
+    describe "invalid docks" do
       it "should not dock a bike that is already docked" do
         @dockable_instance.dock(@bike1)
         lambda { @dockable_instance.dock(@bike1) }.must_raise RuntimeError
       end
 
-      it "should return true if bike docked successfully" do
-        
+      it "should return the bike if bike docked successfully" do
+        @dockable_instance.dock(@bike1).must_equal @bike1
       end
 
       it "should give a suitable error message when trying to add a bike that is already docked" do
@@ -116,8 +103,8 @@ describe Dockable do
       end
     end
 
+
     describe "docking when full" do
-      
       before do
         @dockable_instance.capacity=(1)
         @dockable_instance.dock(@bike1)
@@ -137,8 +124,31 @@ describe Dockable do
     end
   end
 
-  describe "undocking bikes" do
 
+  describe "bikes" do
+    it "should return a list of all docked bikes WHEN no argument is specified" do
+      @dockable_instance.dock(@bike1)
+      @dockable_instance.dock(@bike2)
+      @dockable_instance.bikes.must_equal [@bike1, @bike2]
+    end
+
+    it "should return a list of bikes of a specified state when specified" do
+      @dockable_instance.dock(@bike1)
+      @dockable_instance.dock(@bike2)
+      @dockable_instance.dock(@bike3.break!)
+      @dockable_instance.bikes(Bike::WORKING).must_equal [@bike1, @bike2]
+    end
+
+    it "should NOT be possible to add bikes without docking them" do
+      @dockable_instance.dock(@bike1)
+      @dockable_instance.dock(@bike2)
+      @dockable_instance.bikes << @bike3
+      @dockable_instance.bikes.must_equal [@bike1, @bike2]
+    end
+  end
+
+
+  describe "undocking bikes" do
     before do
       @dockable_instance.dock(@bike1)
       @dockable_instance.dock(@bike2)
@@ -159,9 +169,15 @@ describe Dockable do
       @dockable_instance.undock(@undocked_bike).must_equal nil
     end
 
-    describe "when empty" do
+    it "should NOT be possible to remove bikes without undocking them" do
+      @dockable_instance.bikes.pop
+      @dockable_instance.bikes.must_equal [@bike1, @bike2, @bike3, @bike4]
+    end
+
+
+    describe "undocking when empty" do
       before do
-        @empty_dockable_instance = DockableClass.new(Headquarters.new)  # empty DockableClass instances
+        @empty_dockable_instance = DockableClass.new  # empty DockableClass instances
       end
 
       it "wont undock bikes if there are not enough bikes" do
@@ -178,49 +194,43 @@ describe Dockable do
     end
   end
 
-  describe "broken_bikes" do
 
-    it "should return only the broken_bikes" do
-      @broken_bike1 = Bike.new(1).break!
-      @broken_bike2 = Bike.new(2).break!
-      @dockable_instance.dock(@bike1)
-      @dockable_instance.dock(@broken_bike1)
-      @dockable_instance.dock(@bike2)
-      @dockable_instance.dock(@broken_bike2)
-
-      @dockable_instance.broken_bikes.must_equal [@broken_bike1, @broken_bike2]
+  describe "bike count" do
+    it "should count the total number of bikes docked WHEN a particular bike type is NOT specified" do
+      @dockable_instance.count_bikes.must_be_kind_of(Integer)
     end
 
-    it "should return an empty array if there are no broken bikes" do
-      @dockable_instance.dock(@bike1)
-      @dockable_instance.broken_bikes.must_equal []
+    it "should return a zero bike count for a new instance" do
+      @dockable_instance.count_bikes.must_equal 0
     end
 
-  end
-
-  describe "available bikes" do
-    it "should return only the available bikes" do
-      @broken_bike1 = Bike.new(1).break!
+    it "should count only bikes of a particular type when bike type is specified" do
       @dockable_instance.dock(@bike1)
-      @dockable_instance.dock(@broken_bike1)
-      @dockable_instance.available_bikes.must_equal [@bike1]
-    end
-
-    it "should return an empty array if there are no available bikes" do
-      @broken_bike1 = Bike.new(1).break!
-      @dockable_instance.dock(@broken_bike1)
-      @dockable_instance.available_bikes.must_equal []
+      @dockable_instance.dock(@bike2.break!)
+      @dockable_instance.count_bikes(Bike::WORKING).must_equal 1
     end
   end
 
-  describe "hunger levels" do
-    it "should have a default value of 0" do
-      @dockable_instance.get_hunger_for(Bike::BROKEN).must_equal 0
-    end
 
-    it "should have a set_hunger_for and a get_hunger_for methods that set and get the hunger level" do
-      @dockable_instance.set_hunger_for(Bike::BROKEN => 1)
-      @dockable_instance.get_hunger_for(Bike::BROKEN).must_equal 1
-    end
+  it "should be full when bike count is equal to capacity" do
+    @dockable_instance.capacity=(1)
+    @dockable_instance.dock(@bike1)
+    @dockable_instance.full?.must_equal true
   end
+
+  it "should be empty when the count of bikes is 0" do
+    @dockable_instance.empty?.must_equal true
+  end
+  
+
+  # describe "hunger levels" do
+  #   it "should have a default value of 0" do
+  #     @dockable_instance.get_hunger_for(Bike::BROKEN).must_equal 0
+  #   end
+
+  #   it "should have a set_hunger_for and a get_hunger_for methods that set and get the hunger level" do
+  #     @dockable_instance.set_hunger_for(Bike::BROKEN => 1)
+  #     @dockable_instance.get_hunger_for(Bike::BROKEN).must_equal 1
+  #   end
+  # end
 end

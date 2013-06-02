@@ -1,31 +1,26 @@
 
+# Bike knows and can change it's state
 class Bike
+  attr_reader :id
+  attr_accessor :state
 
-
-  BIKE_TYPES = [
+  STATES = [
     BROKEN = :broken,
     WORKING = :working
   ]
 
-  attr_reader :id
-
   def initialize(id)
-    fix!
+    self.state = WORKING
     @id = id
-    @broken = false
-  end
-
-  def broken?
-    @broken
   end
 
   def break!
-    @broken = true
+    self.state = BROKEN
     self
   end
 
   def fix!
-    @broken = false
+    self.state = WORKING
     self
   end
 end
