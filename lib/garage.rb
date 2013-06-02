@@ -1,6 +1,8 @@
 require_relative 'dockable.rb'
 require_relative 'headquarters'
+require_relative 'bike'
 
+# A Garage is a Dockable that fixes bikes that are docked with it
 class Garage
   include Dockable
   
@@ -10,11 +12,10 @@ class Garage
     # set_hunger_for(Bike::WORKING => -1)
   end
 
-  # alias :fixed_bikes :available_bikes
+  # alias :fixed_bikes :bikes(Bike::WORKING)
 
   def fix(bike)
-    bike.fix!
+    bike.state = Bike::WORKING
   end
-
 
 end

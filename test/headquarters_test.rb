@@ -27,19 +27,41 @@ describe Headquarters do
     @headquarters.dockables.must_equal []
   end
 
-  it "should return a list of all docked bikes" do
-    @bike1 = Bike.new(1)
-    @bike2 = Bike.new(2)
-    @bike3 = Bike.new(3)
-    
-    @docking_station = DockingStation.new(@headquarters)
-    @garage = Garage.new(@headquarters)
-    @van = Van.new(@headquarters)
+  describe "all_docked_bikes" do
+    before do
+      @faultless_bike1 = Bike.new(id:1,chance_of_breaking:0).ride
+      @faultless_bike2 = Bike.new(id:2,chance_of_breaking:0).ride
+      @faultless_bike3 = Bike.new(id:3,chance_of_breaking:0).ride
+      @duff_bike = Bike.new(id:4,chance_of_breaking:1.0).ride
+    end
 
-    @docking_station.dock(@bike1)
-    @docking_station.dock(@bike2)
-    @garage.dock(@bike3)
+    it "should return a list of all docked bikes at registered dockables" do
+      
+      docking_station = DockingStation.new(@headquarters)
+      unregistered_docking_station =DockingStation.new(Headquarters.new)
+      garage = Garage.new(@headquarters)
+      van = Van.new(@headquarters)
 
-    @headquarters.all_docked_bikes.must_equal [@bike1, @bike2, @bike3]
+      docking_station.dock(@faultless_bike1)
+      docking_station.dock(@faultless_bike2)
+      garage.dock(@duff_bike)
+      unregistered_docking_station.dock(@faultless_bike3)
+
+      @headquarters.all_docked_bikes.must_equal [@faultless_bike1, @faultless_bike2, @duff_bike]
+    end
+
+    it "should return a list of all docked bikes of a specified type at registered dockables" do
+      docking_station = DockingStation.new(@headquarters)
+      unregistered_docking_station =DockingStation.new(Headquarters.new)
+      garage = Garage.new(@headquarters)
+      van = Van.new(@headquarters)
+
+      docking_station.dock(@faultless_bike1)
+      docking_station.dock(@faultless_bike2)
+      garage.dock(@duff_bike)
+      unregistered_docking_station.dock(@faultless_bike1)
+
+      @headquarters.all_docked_bikes(Bike::WORKING).must_equal [@faultless_bike1, @faultless_bike2]
+    end
   end
 end

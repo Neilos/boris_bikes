@@ -14,16 +14,14 @@ describe Van do
     @docking_station1 = DockingStation.new(@hq)
     @docking_station2 = DockingStation.new(@hq)
     @garage1 = Garage.new(@hq)
-    @bike1 = Bike.new(1)
-    @bike2 = Bike.new(2)
-    @bike3 = Bike.new(3)
-    @bike4 = Bike.new(4)
-    @bike5 = Bike.new(5)
-    @bike6 = Bike.new(6)
-    @bike7 = Bike.new(7)
-    @bike8 = Bike.new(8)
-    @bike9 = Bike.new(9)
-    @bike10 = Bike.new(10)
+    @faultless_bike1 = Bike.new(id:1, chance_of_breaking:0)
+    @faultless_bike2 = Bike.new(id:2, chance_of_breaking:0)
+    @faultless_bike3 = Bike.new(id:3, chance_of_breaking:0)
+    @faultless_bike4 = Bike.new(id:4, chance_of_breaking:0)
+    @duff_bike1 = Bike.new(id:5, chance_of_breaking:1.0)
+    @duff_bike2 = Bike.new(id:6, chance_of_breaking:1.0)
+    @duff_bike3 = Bike.new(id:7, chance_of_breaking:1.0)
+    @duff_bike4 = Bike.new(id:8, chance_of_breaking:1.0)
   end
 
   it "should be initialized with a headquarters without any errors" do
@@ -36,29 +34,29 @@ describe Van do
 
   describe "collect" do
     it "should undock bikes from a specified dockable" do
-      @docking_station1.dock(@bike1)
-      @van.collect(@docking_station1,@bike1)
-      @docking_station1.bikes.wont_include @bike1
+      @docking_station1.dock(@faultless_bike1)
+      @van.collect(@docking_station1,@faultless_bike1)
+      @docking_station1.bikes.wont_include @faultless_bike1
     end
 
     it "should dock bikes into the van" do
-      @docking_station1.dock(@bike1)
-      @van.collect(@docking_station1,@bike1)
-      @van.bikes.must_include @bike1
+      @docking_station1.dock(@faultless_bike1)
+      @van.collect(@docking_station1,@faultless_bike1)
+      @van.bikes.must_include @faultless_bike1
     end
   end
 
   describe "drop_off" do
     it "should undock bikes from the van" do
-      @van.dock(@bike1)
-      @van.drop_off(@docking_station1,@bike1)
-      @van.bikes.wont_include @bike1
+      @van.dock(@faultless_bike1)
+      @van.drop_off(@docking_station1,@faultless_bike1)
+      @van.bikes.wont_include @faultless_bike1
     end
 
     it "should dock bikes to a specified dockable" do
-      @van.dock(@bike1)
-      @van.drop_off(@docking_station1,@bike1)
-      @docking_station1.bikes.must_include @bike1
+      @van.dock(@faultless_bike1)
+      @van.drop_off(@docking_station1,@faultless_bike1)
+      @docking_station1.bikes.must_include @faultless_bike1
     end
   end
 
@@ -66,11 +64,11 @@ describe Van do
   describe "redistribute" do
 
     before do
-      @docking_station1.dock(@bike1)
-      @docking_station1.dock(@bike2)
-      @docking_station1.dock(@bike3)
-      @docking_station2.dock(@bike4)
-      @garage1.dock(@bike5)
+      @docking_station1.dock(@faultless_bike1)
+      @docking_station1.dock(@faultless_bike2)
+      @docking_station1.dock(@faultless_bike3)
+      @docking_station2.dock(@faultless_bike4)
+      @garage1.dock(@duff_bike1)
     end
 
     it "should respond to redistribute" do

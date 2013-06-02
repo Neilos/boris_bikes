@@ -17,7 +17,7 @@ class Bike
 
   def ride
     self.state = BROKEN if chance_of_breaking >= Random.rand
-    state
+    self
   end
 
 end

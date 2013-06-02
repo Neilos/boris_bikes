@@ -40,34 +40,22 @@ module Dockable
     docked_bikes(specified_state).count
   end
 
-  def empty?
-    count_bikes == 0
-  end
-
   def full?
     count_bikes == capacity
   end
 
   def dock(bike)
     raise RuntimeError, "Maximum capacity reached. Cannot dock another bike." if full?
-    raise RuntimeError, "Bike with id #{bike.id} is already docked" if docked_bikes.include? bike
+    raise RuntimeError, "Bike is already docked" if docked_bikes.include? bike
     bike if docked_bikes << bike
   end
 
-  # returns an array of docked_bikes
-  def undock(bike_to_undock = nil)
-    raise RuntimeError, "No more bikes." if empty?
+  def undock(bike_to_undock=nil)
+    raise RuntimeError, "No more bikes." if count_bikes == 0
     return docked_bikes.shift unless bike_to_undock
     docked_bikes.delete bike_to_undock
   end
 
-  def broken_bikes
-    bikes.select { |bike| bike.state }
-  end
-
-  def available_bikes
-    bikes.reject { |bike| bike.broken? }
-  end
 
   # def hunger_hash
   #  @hunger_hash ||= {}
