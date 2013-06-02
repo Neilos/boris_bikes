@@ -16,21 +16,21 @@ describe DockingStation do
 
   it "should be able to break bikes" do
     @docking_station.break(@bike)
-    @bike.broken?.must_equal true
+    @bike.state.must_equal Bike::BROKEN
   end
 
   it "should be a dockable" do
     @docking_station.must_be_kind_of(Dockable)
   end
   
-  describe "hunger levels" do
-    it "should have a hunger level less than 0 for bike type Bike::BROKEN" do
-      @docking_station.get_hunger_for(Bike::BROKEN).must_be(:<, 0)
-    end
+  # describe "hunger levels" do
+  #   it "should have a hunger level less than 0 for bike type Bike::BROKEN" do
+  #     @docking_station.get_hunger_for(Bike::BROKEN).must_be(:<, 0)
+  #   end
 
-    it "should have a hunger level more than 0 for bike type Bike::WORKING" do
-      @docking_station.get_hunger_for(Bike::WORKING).must_be(:>, 0)
-    end
-  end
+  #   it "should have a hunger level more than 0 for bike type Bike::WORKING" do
+  #     @docking_station.get_hunger_for(Bike::WORKING).must_be(:>, 0)
+  #   end
+  # end
 
 end

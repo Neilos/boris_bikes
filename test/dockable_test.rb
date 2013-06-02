@@ -28,7 +28,7 @@ describe Dockable do
   it "should be able to register with a headquarters" do
     @mock_hq = MiniTest::Mock.new
     @mock_hq.expect(:register_dockable, true, [DockableClass])
-    @dockable_instance.register_with_hq(@mock_hq)
+    @dockable_instance.headquarters = @mock_hq
     @mock_hq.verify
   end
 
@@ -221,7 +221,7 @@ describe Dockable do
   it "should be empty when the count of bikes is 0" do
     @dockable_instance.empty?.must_equal true
   end
-  
+
 
   # describe "hunger levels" do
   #   it "should have a default value of 0" do

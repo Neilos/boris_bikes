@@ -12,8 +12,8 @@ module Dockable
     @capacity ||= DEFAULT_CAPACITY
   end
 
-  def register_with_hq(hq)
-    @headquarters = hq            
+  def headquarters=(headquarters)
+    @headquarters = headquarters
     @headquarters.register_dockable(self)
   end
 

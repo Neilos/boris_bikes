@@ -79,7 +79,7 @@ describe Van do
 
     describe "how_hungry_for" do
       it "should return a numeric score for how hungry the dockable is for a given bike type based on calculation: hunger level * no. of empty spaces" do
-
+        skip
         ################ DEBUGGING ##########
         puts "@garage1's how_hungry_for Bikes::BROKEN is: #{@van.how_hungry_for(@garage1, Bike::BROKEN)}"
         puts "@docking_station1's how_hungry_for Bikes::WORKING is: #{@van.how_hungry_for(@docking_station1, Bike::WORKING)}"
@@ -92,6 +92,7 @@ describe Van do
 
     describe "most_hungry_for" do
       it "should return the dockable that is most hungry for a given bike type" do
+        skip
         @van.most_hungry_for(Bike::WORKING).must_equal @docking_station2
       end
     end
@@ -99,10 +100,12 @@ describe Van do
     describe "most_hungry" do
       
       it "should return hash" do
+        skip
         @van.most_hungry.must_be_kind_of Hash
       end
 
       it "should return the most hungry dockable" do
+        skip
         return_hash = { :most_hungry_dockable => @garage1.object_id, :hungry_for => Bike::BROKEN, :number_desired => 9}
         @van.most_hungry.must_equal return_hash
       end

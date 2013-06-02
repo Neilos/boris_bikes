@@ -14,7 +14,6 @@ class DockableClass
 end
 
 describe Headquarters do
-
   before do
     @headquarters = Headquarters.new
   end
@@ -43,5 +42,4 @@ describe Headquarters do
 
     @headquarters.all_docked_bikes.must_equal [@bike1, @bike2, @bike3]
   end
-
 end

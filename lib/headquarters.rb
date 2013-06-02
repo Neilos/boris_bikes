@@ -15,6 +15,7 @@ attr_reader :dockables
 
   def register_dockable(new_dockable)
      dockables << new_dockable
+     true
   end
 
   

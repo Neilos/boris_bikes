@@ -5,9 +5,9 @@ class Garage
   include Dockable
   
   def initialize(headquarters)
-    register_with_hq(headquarters)
-    set_hunger_for(Bike::BROKEN => 1)
-    set_hunger_for(Bike::WORKING => -1)
+    self.headquarters = headquarters
+    # set_hunger_for(Bike::BROKEN => 1)
+    # set_hunger_for(Bike::WORKING => -1)
   end
 
   # alias :fixed_bikes :available_bikes
